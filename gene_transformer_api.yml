@@ -1,10 +1,10 @@
 swagger: '2.0'
 info:
-  title: API for gene-list transformers
+  title: API for common-to-rare disease gene-list producer
   version: 1.1.0
-  description: API for gene-list transformers.
+  description: API for common-to-rare disease gene-list producer.
 host: sharpener.ncats.io
-basePath: /<transformer-path>
+basePath: /common_to_rare_disease
 schemes:
 - "https"
 
