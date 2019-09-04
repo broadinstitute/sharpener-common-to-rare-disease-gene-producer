@@ -1,0 +1,265 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "API for common-to-rare disease gene-list producer.",
+    "version" : "1.1.0",
+    "title" : "API for common-to-rare disease gene-list producer"
+  },
+  "host" : "sharpener.ncats.io",
+  "basePath" : "/common_to_rare_disease",
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/transformer_info" : {
+      "get" : {
+        "tags" : [ "transformer" ],
+        "summary" : "Retrieve transformer info",
+        "description" : "Provides information about the transformer.",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/transformer_info"
+            }
+          }
+        },
+        "x-accepts" : "application/json"
+      }
+    },
+    "/transform" : {
+      "post" : {
+        "tags" : [ "transformer" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "query",
+          "description" : "Performs transformer query.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/transformer_query"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/gene_info"
+              }
+            }
+          }
+        },
+        "x-contentType" : "application/json",
+        "x-accepts" : "application/json"
+      }
+    }
+  },
+  "definitions" : {
+    "transformer_query" : {
+      "type" : "object",
+      "required" : [ "controls" ],
+      "properties" : {
+        "genes" : {
+          "type" : "array",
+          "description" : "List of genes that will be transformed. Required for expanders and filters; should be omitted for producers.",
+          "items" : {
+            "$ref" : "#/definitions/gene_info"
+          }
+        },
+        "controls" : {
+          "type" : "array",
+          "description" : "Values that control the behavior of the transformer. Names of the controls must match the names specified in the transformer's definition and values must match types (and possibly  allowed_values) specified in the transformer's definition.",
+          "items" : {
+            "$ref" : "#/definitions/property"
+          }
+        }
+      }
+    },
+    "gene_info" : {
+      "type" : "object",
+      "required" : [ "gene_id" ],
+      "properties" : {
+        "gene_id" : {
+          "type" : "string",
+          "description" : "Id of the gene."
+        },
+        "identifiers" : {
+          "$ref" : "#/definitions/gene_info_identifiers"
+        },
+        "attributes" : {
+          "type" : "array",
+          "description" : "Additional information about the gene and provenance about gene-list menbership. Sharpener will use myGene.info to add the following attributes to every gene: 'gene_symbol',  'entrez_gene_id', 'HGNC', 'MIM', 'ensembl_gene_id', 'synonyms', 'gene_name',  and 'myGene.info id'. Multiple synonyms and ensembl_gene_id are separated by semicolons.",
+          "items" : {
+            "$ref" : "#/definitions/attribute"
+          }
+        }
+      },
+      "example" : {
+        "identifiers" : {
+          "mim" : "MIM:608958",
+          "entrez" : "NCBIGene:100",
+          "ensembl" : [ "ENSEMBL:ENSG00000196839", "ENSEMBL:ENSG00000196839" ],
+          "hgnc" : "HGNC:186"
+        },
+        "attributes" : [ {
+          "name" : "name",
+          "source" : "source",
+          "value" : "value"
+        }, {
+          "name" : "name",
+          "source" : "source",
+          "value" : "value"
+        } ],
+        "gene_id" : "gene_id"
+      }
+    },
+    "attribute" : {
+      "type" : "object",
+      "required" : [ "name", "value" ],
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "string"
+        },
+        "source" : {
+          "type" : "string"
+        }
+      },
+      "example" : {
+        "name" : "name",
+        "source" : "source",
+        "value" : "value"
+      }
+    },
+    "property" : {
+      "type" : "object",
+      "required" : [ "name", "value" ],
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "string"
+        }
+      }
+    },
+    "transformer_info" : {
+      "type" : "object",
+      "required" : [ "description", "function", "name", "parameters", "required_attributes" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "Name of the transformer."
+        },
+        "function" : {
+          "type" : "string",
+          "description" : "Function of the transformer, one of 'producer', 'expander', 'filter'.",
+          "enum" : [ "producer", "expander", "filter" ]
+        },
+        "description" : {
+          "type" : "string",
+          "description" : "Description of the transformer."
+        },
+        "parameters" : {
+          "type" : "array",
+          "description" : "Parameters used to control the transformer.",
+          "items" : {
+            "$ref" : "#/definitions/parameter"
+          }
+        },
+        "required_attributes" : {
+          "type" : "array",
+          "description" : "Gene attributes required by the transformer",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      },
+      "description" : "Definition of the transformer.",
+      "example" : {
+        "required_attributes" : [ "required_attributes", "required_attributes" ],
+        "function" : "producer",
+        "name" : "name",
+        "description" : "description",
+        "parameters" : [ {
+          "allowed_values" : [ "allowed_values", "allowed_values" ],
+          "default" : "default",
+          "name" : "name",
+          "type" : "Boolean"
+        }, {
+          "allowed_values" : [ "allowed_values", "allowed_values" ],
+          "default" : "default",
+          "name" : "name",
+          "type" : "Boolean"
+        } ]
+      }
+    },
+    "parameter" : {
+      "type" : "object",
+      "required" : [ "default", "name", "type" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "Name of the parameter."
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "Type of the parameter, one of 'Boolean', 'int', 'double', 'string'.",
+          "enum" : [ "Boolean", "int", "double", "string" ]
+        },
+        "default" : {
+          "type" : "string",
+          "description" : "Default value of the parameter."
+        },
+        "allowed_values" : {
+          "type" : "array",
+          "description" : "Allowed values for the parameter.",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      },
+      "example" : {
+        "allowed_values" : [ "allowed_values", "allowed_values" ],
+        "default" : "default",
+        "name" : "name",
+        "type" : "Boolean"
+      }
+    },
+    "gene_info_identifiers" : {
+      "properties" : {
+        "entrez" : {
+          "type" : "string",
+          "example" : "NCBIGene:100",
+          "description" : "Entrez gene id (CURIE)."
+        },
+        "hgnc" : {
+          "type" : "string",
+          "example" : "HGNC:186",
+          "description" : "HGNC gene id (CURIE)."
+        },
+        "mim" : {
+          "type" : "string",
+          "example" : "MIM:608958",
+          "description" : "OMIM gene id (CURIE)."
+        },
+        "ensembl" : {
+          "type" : "array",
+          "description" : "ENSEMBL gene id (CURIE).",
+          "items" : {
+            "type" : "string",
+            "example" : "ENSEMBL:ENSG00000196839"
+          }
+        }
+      },
+      "example" : {
+        "mim" : "MIM:608958",
+        "entrez" : "NCBIGene:100",
+        "ensembl" : [ "ENSEMBL:ENSG00000196839", "ENSEMBL:ENSG00000196839" ],
+        "hgnc" : "HGNC:186"
+      }
+    }
+  }
+}
