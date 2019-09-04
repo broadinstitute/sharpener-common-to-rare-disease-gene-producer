@@ -1,16 +1,13 @@
 package producer;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.io.InputStreamReader;
-import java.io.BufferedReader;
 
 import apimodels.Attribute;
 import apimodels.GeneInfo;
+import apimodels.GeneInfoIdentifiers;
 import apimodels.Parameter;
 import apimodels.Property;
 import apimodels.TransformerInfo;
@@ -19,13 +16,14 @@ import apimodels.TransformerQuery;
 public class Producer {
 
 	private static final String OMIM_DISEASE_ID = "omim_disease_id";
-
-	private static HashMap<String,ArrayList<GeneInfo>> geneSets = new HashMap<String,ArrayList<GeneInfo>>();
+	
+	private static final String PRODUCER_NAME = "Common-to-rare disease genes";
 
 	public static TransformerInfo transformerInfo() {
-		TransformerInfo transformerInfo = new TransformerInfo().name("Common-rare disease gene-list producer");
+		TransformerInfo transformerInfo = new TransformerInfo().name(PRODUCER_NAME);
 		transformerInfo.function(TransformerInfo.FunctionEnum.fromValue("producer"));
-		transformerInfo.addParametersItem(new Parameter().name(OMIM_DISEASE_ID).type(Parameter.TypeEnum.fromValue("string")));
+		transformerInfo.description("Common-to-rare disease gene-list producer");
+		transformerInfo.addParametersItem(new Parameter().name(OMIM_DISEASE_ID).type(Parameter.TypeEnum.STRING)._default("MIM:222100"));
 		return transformerInfo;
 	}
 
@@ -38,6 +36,9 @@ public class Producer {
 				ID = property.getValue();
 			}
 		}
+		if (ID.startsWith("MIM:")) {
+			ID = ID.substring(4);
+		}
 		
 		ArrayList<GeneInfo> genes = new ArrayList<GeneInfo>();
 		Runtime rt = Runtime.getRuntime();
@@ -45,7 +46,6 @@ public class Producer {
 
 		try {
 			Process proc = rt.exec(commands);
-			System.err.println("ID:"+ID);
 			
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
@@ -53,10 +53,11 @@ public class Producer {
 			//Read the gene list from WF1
 			String s;
 			while ((s = stdInput.readLine()) != null) {
-				GeneInfo gene = new GeneInfo().geneId("NCBIgene:" + s);
-				gene.addAttributesItem(new Attribute().name("entrez_gene_id").value(s).source("BioThings"));
+				String geneId = "NCBIGene:" + s;
+				GeneInfo gene = new GeneInfo().geneId(geneId);
+				gene.identifiers(new GeneInfoIdentifiers().entrez(geneId));
+				gene.addAttributesItem(new Attribute().name("related to omim disease").value(ID).source(PRODUCER_NAME));
 				genes.add(gene); 
-				System.err.println(gene);
 			}
 
 			//Print any errors from the attempted command
