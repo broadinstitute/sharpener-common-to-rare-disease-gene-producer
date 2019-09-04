@@ -4,6 +4,8 @@ import apimodels.GeneInfo;
 import apimodels.TransformerInfo;
 import apimodels.TransformerQuery;
 
+import producer.Producer;
+
 import play.mvc.Http;
 import java.util.List;
 import java.util.ArrayList;
@@ -15,14 +17,12 @@ import javax.validation.constraints.*;
 public class TransformerApiControllerImp implements TransformerApiControllerImpInterface {
     @Override
     public List<GeneInfo> transformPost(TransformerQuery query) throws Exception {
-        //Do your magic!!!
-        return new ArrayList<GeneInfo>();
+    	return Producer.produceGeneSet(query);
     }
 
     @Override
     public TransformerInfo transformerInfoGet() throws Exception {
-        //Do your magic!!!
-        return new TransformerInfo();
+    	return Producer.transformerInfo();
     }
 
 }
