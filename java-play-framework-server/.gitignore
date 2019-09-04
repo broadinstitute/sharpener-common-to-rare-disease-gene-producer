@@ -1,0 +1,10 @@
+#eclipse-related files
+/bin/
+/target/
+/project/target/
+/project/project/target/
+
+.settings
+.project
+.classpath
+.cache-main
