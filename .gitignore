@@ -21,3 +21,41 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+#sbt-produced files
+java-play-framework-server/target/
+java-play-framework-server/project/target/
+java-play-framework-server/project/project/target/
+
+#eclipse-related files
+java-play-framework-server/bin/
+java-play-framework-server/.settings
+java-play-framework-server/.project
+java-play-framework-server/.classpath
+java-play-framework-server/.cache-main
+
+#python-related files
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+venv/
