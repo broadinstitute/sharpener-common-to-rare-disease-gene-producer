@@ -3,8 +3,8 @@
 import sys
 from setuptools import setup, find_packages
 
-NAME = "swagger_server"
-VERSION = "1.0.0"
+NAME = "common-to-rare-disease"
+VERSION = "1.3.0"
 
 # To install the library, run the following
 #

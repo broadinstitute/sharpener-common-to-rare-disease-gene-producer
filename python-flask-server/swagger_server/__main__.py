@@ -4,11 +4,11 @@ import connexion
 
 from swagger_server import encoder
 
+app = connexion.App(__name__, specification_dir='./swagger/')
+app.app.json_encoder = encoder.JSONEncoder
+app.add_api('swagger.yaml', arguments={'title': 'API for common-to-rare disease gene-list producer'})
 
 def main():
-    app = connexion.App(__name__, specification_dir='./swagger/')
-    app.app.json_encoder = encoder.JSONEncoder
-    app.add_api('swagger.yaml', arguments={'title': 'API for common-to-rare disease gene-list producer'})
     app.run(port=8080)
 
 
