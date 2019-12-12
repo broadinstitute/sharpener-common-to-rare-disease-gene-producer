@@ -1,0 +1,27 @@
+{
+    "name": "OMIM common-to-rare disease genes",
+    "label": "OMIM",
+    "version": "1.3.0",
+    "function": "producer",
+    "description": "Gene-list producer based on mapping complex disease to Mendelian disease through shared symptoms.",
+    "properties": {
+        "list_predicate": "related_to",
+        "member_predicate": "related_to",
+        "source_url": null,
+        "method": null
+    },
+    "parameters": [
+        {
+            "default": "MIM:222100",
+            "name": "OMIM disease ID",
+            "type": "string",
+            "allowed_values": null,
+            "suggested_values": null,
+            "lookup_url": null,
+            "biolink_class": "disease"
+        }
+    ],
+    "required_attributes": [
+        "identifiers.entrez"
+    ]
+}
